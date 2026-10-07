@@ -1393,6 +1393,7 @@ function createPrattDSP(){
 
 // Pure PCM renderer shared with the offline export worker. No voice stealing.
 function createPCMSession(DSP,song,s,rate=44100){
+ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const plan=DSP.plan(song,s),total=Math.ceil(plan.seconds*rate),room=DSP.createRoom(rate),active=[];let noteIndex=0,frame=0,maxVoices=0;
  const control={gain:Array(16).fill((100/127)**1.25),bend:Array(16).fill(1),panL:Array(16).fill(Math.cos(64/127*Math.PI/2)),panR:Array(16).fill(Math.sin(64/127*Math.PI/2))};
  const events=[];for(let ch=0;ch<16;ch++)for(const type of ['gain','pan','bend'])for(const e of song.automation[ch][type])events.push({frame:Math.round(e.time/s.speed*rate),ch,type,value:e.value});events.sort((a,b)=>a.frame-b.frame);let controlIndex=0;
